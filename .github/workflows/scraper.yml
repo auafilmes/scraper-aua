@@ -1,0 +1,29 @@
+name: Scraper Diário
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # Executa todos os dias às 06:00 UTC
+  workflow_dispatch:      # Permite executar manualmente
+
+jobs:
+  run-scraper:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar repositório
+        uses: actions/checkout@v3
+
+      - name: Instalar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Executar o scraper
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          SENHA_FIXA: ${{ secrets.SENHA_FIXA }}
+        run: python scraper.py
